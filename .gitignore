@@ -3,5 +3,5 @@ __pycache__/
 node_modules/
 .env
 ./password
-../gmail-whatsapp-notifier.git/info
-
+./gmail-whatsapp-notifier.git/info
+./gmail-whatsapp-notifier/refs/*
