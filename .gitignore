@@ -2,5 +2,6 @@ __pycache__/
 *.pyc
 node_modules/
 .env
-./password.txt
+./password
+../gmail-whatsapp-notifier.git/info
 
