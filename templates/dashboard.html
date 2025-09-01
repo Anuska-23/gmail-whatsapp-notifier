@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Gmail → WhatsApp Dashboard</title>
+<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<style>
+    * { box-sizing: border-box; margin:0; padding:0; }
+    body {
+        font-family: 'Roboto', sans-serif;
+        background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
+        color: #fff;
+        min-height: 100vh;
+        position: relative;
+        overflow-x: hidden;
+        padding: 50px 20px;
+    }
+
+    /* Floating Bubbles */
+    .bubbles { position:absolute; width:100%; height:100%; top:0; left:0; z-index:0; overflow:hidden; }
+    .bubble { position:absolute; border-radius:50%; opacity:0.3; animation: float 20s linear infinite; }
+    @keyframes float {
+        0% { transform: translateY(100vh) translateX(0) scale(0.5); opacity:0.3; }
+        25% { transform: translateY(75vh) translateX(50px) scale(0.6); opacity:0.5; }
+        50% { transform: translateY(50vh) translateX(-30px) scale(0.8); opacity:0.6; }
+        75% { transform: translateY(25vh) translateX(20px) scale(0.9); opacity:0.5; }
+        100% { transform: translateY(-100px) translateX(0) scale(1); opacity:0; }
+    }
+
+    .container {
+        position: relative;
+        z-index:1;
+        backdrop-filter: blur(20px);
+        background: rgba(255,255,255,0.05);
+        border-radius: 25px;
+        padding: 50px 40px;
+        max-width: 900px;
+        margin: auto;
+        box-shadow: 0 20px 50px rgba(0,0,0,0.6);
+    }
+
+    h2 {
+        text-align:center;
+        font-size:36px;
+        font-weight:bold;
+        font-style:italic;
+        color:#ff00ff;
+        margin-bottom:30px;
+        text-shadow: 0 0 10px #ff00ff, 0 0 20px #00ffff;
+    }
+
+    .emails {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        gap: 15px;
+    }
+
+    .email-card {
+        background: linear-gradient(135deg, #1c1f28, #2d3140);
+        padding: 20px;
+        border-radius: 15px;
+        box-shadow: 0 10px 25px rgba(0,255,213,0.2);
+        opacity: 0;
+        transform: translateY(-20px);
+        transition: all 0.5s ease;
+        border-left: 5px solid #00ffd5;
+    }
+
+    .email-card.show { opacity:1; transform: translateY(0); }
+    .email-card strong { color:#ff00ff; font-weight:bold; font-style:italic; }
+    .email-card p { margin-top:8px; color:#00ffff; font-size:14px; font-weight:bold; font-style:italic; }
+
+</style>
+</head>
+<body>
+
+<div class="bubbles">
+    <div class="bubble" style="width:50px;height:50px;background:#ff00ff;left:10%;animation-duration:18s;"></div>
+    <div class="bubble" style="width:80px;height:80px;background:#00ffff;left:30%;animation-duration:22s;"></div>
+    <div class="bubble" style="width:60px;height:60px;background:#ff00ff;left:50%;animation-duration:20s;"></div>
+    <div class="bubble" style="width:100px;height:100px;background:#00ffff;left:70%;animation-duration:25s;"></div>
+    <div class="bubble" style="width:40px;height:40px;background:#ff00ff;left:85%;animation-duration:19s;"></div>
+</div>
+
+<div class="container">
+    <h2><i class="fa-solid fa-tachometer-alt"></i> Gmail → WhatsApp Dashboard</h2>
+    <div class="emails" id="emailsContainer">
+        <!-- New emails will appear here -->
+    </div>
+</div>
+
+<script>
+    async function fetchNewEmails() {
+        try {
+            const response = await fetch('/new_emails');
+            if (!response.ok) return;
+            const emails = await response.json();
+            const container = document.getElementById('emailsContainer');
+
+            emails.forEach(email => {
+                const card = document.createElement('div');
+                card.className = 'email-card';
+                card.innerHTML = `<strong>From:</strong> ${email.sender}<p><strong>Subject:</strong> ${email.subject}</p>`;
+                container.prepend(card);
+                setTimeout(() => card.classList.add('show'), 50);
+            });
+        } catch(err) {
+            console.error("Error fetching new emails:", err);
+        }
+    }
+
+    setInterval(fetchNewEmails, 15000);
+    fetchNewEmails();
+</script>
+</body>
+</html>
